@@ -87,7 +87,8 @@ const ProfileModal = ({ onClose }) => {
                 }
             });
             toast.success('Profile picture updated successfully');
-            setProfilePicture(response.data.downloadURL);
+            setProfilePicture(response.data.profile_picture);
+            setIsEditingProfilePicture(false);
         } catch (error) {
             toast.error('An error occurred while updating profile picture');
             console.error('Error updating profile picture:', error);
@@ -126,7 +127,7 @@ const ProfileModal = ({ onClose }) => {
                         <img
                             src={`${profilePicture}` || "https://placehold.co/600x400.png"}
                             alt="Profile"
-                            className="w-24 h-24 rounded-full mx-auto"
+                            className="w-24 h-24 rounded-full mx-auto object-cover"
                         />
                         <div className="flex items-center justify-center">
                             {isEditingProfilePicture ? (
