@@ -63,32 +63,32 @@ router.put('/update-username', authenticateUser, async (req, res) => {
 });
 
 // Upload profile picture
-router.post('/upload-profile-picture', async (req, res) => {
-    upload(req, res, async (err) => {
-        if (err) {
-            res.status(400).send({ message: err });
-        } else {
-            if (req.file == undefined) {
-                res.status(400).send({ message: 'No file selected!' });
-            } else {
-                try {
-                    const username = req.user.username;
-                    const filePath = `/uploads/profile_pictures/${req.file.filename}`;
+// router.post('/upload-profile-picture', async (req, res) => {
+//     upload(req, res, async (err) => {
+//         if (err) {
+//             res.status(400).send({ message: err });
+//         } else {
+//             if (req.file == undefined) {
+//                 res.status(400).send({ message: 'No file selected!' });
+//             } else {
+//                 try {
+//                     const username = req.user.username;
+//                     const filePath = `/uploads/profile_pictures/${req.file.filename}`;
                     
-                    const result = await db.updateUserProfilePicture(username, filePath);
+//                     const result = await db.updateUserProfilePicture(username, filePath);
 
-                    res.status(200).send({
-                        message: 'File uploaded!',
-                        filePath: filePath,
-                        user: result
-                    });
-                } catch (error) {
-                    res.status(500).send({ message: 'Database update failed!', error });
-                }
-            }
-        }
-    });
-});
+//                     res.status(200).send({
+//                         message: 'File uploaded!',
+//                         filePath: filePath,
+//                         user: result
+//                     });
+//                 } catch (error) {
+//                     res.status(500).send({ message: 'Database update failed!', error });
+//                 }
+//             }
+//         }
+//     });
+// });
 
 // Delete user
 
