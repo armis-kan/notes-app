@@ -88,7 +88,7 @@ const ProfileModal = ({ onClose }) => {
                 }
             });
             toast.success('Profile picture updated successfully');
-            setProfilePicture(response.data.filePath);
+            setProfilePicture(response.data.downloadURL);
         } catch (error) {
             toast.error('An error occurred while updating profile picture');
             console.error('Error updating profile picture:', error);
@@ -125,7 +125,7 @@ const ProfileModal = ({ onClose }) => {
 
                     <div className="p-4 md:p-5 text-center flex flex-col items-center mb-4">
                         <img
-                            src={`${process.env.REACT_APP_SERVER_URL}${profilePicture}` || "https://placehold.co/600x400.png"}
+                            src={`${profilePicture}` || "https://placehold.co/600x400.png"}
                             alt="Profile"
                             className="w-24 h-24 rounded-full mx-auto"
                         />
