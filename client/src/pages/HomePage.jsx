@@ -4,10 +4,10 @@ import NoteCard from '../components/NoteCard';
 
 const HomePage = () => {
   const dummyNotes = [
-    { id: 1257275, title: 'Note 1', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', created_at: '2021-09-01T12:00:00Z', updated_at: '2021-09-01T12:00:00Z'},
-    { id: 2257257, title: 'Note 2', content: 'Pellentesque euismod magna vel luctus condimentum.', created_at: '2021-09-01T12:00:00Z', updated_at: '2021-09-01T12:00:00Z'},
-    { id: 3241, title: 'Note 3', content: 'Nullam vitae dui at nisi dignissim tempus.', created_at: '2021-09-01T12:00:00Z', updated_at: '2021-09-01T12:00:00Z'},
-    { id: 47357, title: 'Note 4', content: 'Fusce vel arcu in elit dignissim vulputate sed nec odio.', created_at: '2021-09-01T12:00:00Z', updated_at: '2021-09-01T12:00:00Z'},
+    { id: 1257275, title: 'Note 1', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', created_at: '2021-09-01T12:00:00Z', updated_at: '2021-09-01T12:00:00Z', background_color: '#FFFFFF', text_color: '#000000'},
+    { id: 2257257, title: 'Note 2', content: 'Pellentesque euismod magna vel luctus condimentum.', created_at: '2021-09-01T12:00:00Z', updated_at: '2021-09-01T12:00:00Z', background_color: '#37E019', text_color: '#000000'},
+    { id: 3241, title: 'Note 3', content: 'Nullam vitae dui at nisi dignissim tempus.', created_at: '2021-09-01T12:00:00Z', updated_at: '2021-09-01T12:00:00Z', background_color: '#8E40F2', text_color: '#000000'},
+    { id: 47357, title: 'Note 4', content: 'Fusce vel arcu in elit dignissim vulputate sed nec odio.', created_at: '2021-09-01T12:00:00Z', updated_at: '2021-09-01T12:00:00Z', background_color: '#FB2264', text_color: '#000000'},
   ];
 
   return (
@@ -24,7 +24,7 @@ const HomePage = () => {
         </div>
 
         <div className="w-full md:w-1/2 mb-5">
-          <h2 className="text-3xl font-bold mb-4 pl-10">Your Notes</h2>
+          <h2 className="text-3xl text-black font-bold bg-white ml-10 p-2 rounded-lg w-fit mb-4">Your Notes</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 px-10">
             {dummyNotes.map(note => (
               <NoteCard key={note.id} note={note} />
