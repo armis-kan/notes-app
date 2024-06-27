@@ -1,11 +1,20 @@
 const express = require('express');
 const db = require('../db');
 const authenticateUser = require('../middleware/authenticate');
-const upload = require('../utils/upload');
+const { initializeApp } = require('firebase/app');
+const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require('firebase/storage');
+const config = require('../config/firebaseConfig');
+const multer = require('multer');
 
 const router = express.Router();
 
 router.use(authenticateUser);
+
+initializeApp(config.firebaseConfig);
+
+const storage = getStorage();
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Create user
 
@@ -63,32 +72,40 @@ router.put('/update-username', authenticateUser, async (req, res) => {
 });
 
 // Upload profile picture
-// router.post('/upload-profile-picture', async (req, res) => {
-//     upload(req, res, async (err) => {
-//         if (err) {
-//             res.status(400).send({ message: err });
-//         } else {
-//             if (req.file == undefined) {
-//                 res.status(400).send({ message: 'No file selected!' });
-//             } else {
-//                 try {
-//                     const username = req.user.username;
-//                     const filePath = `/uploads/profile_pictures/${req.file.filename}`;
-                    
-//                     const result = await db.updateUserProfilePicture(username, filePath);
+router.post("/upload-profile-picture", upload.single("filename"), async (req, res) => {
+    try {
+        const dateTime = giveCurrentDateTime();
 
-//                     res.status(200).send({
-//                         message: 'File uploaded!',
-//                         filePath: filePath,
-//                         user: result
-//                     });
-//                 } catch (error) {
-//                     res.status(500).send({ message: 'Database update failed!', error });
-//                 }
-//             }
-//         }
-//     });
-// });
+        const storageRef = ref(storage, `files/${req.file.originalname + "       " + dateTime}`);
+
+        const metadata = {
+            contentType: req.file.mimetype,
+        };
+
+        const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, metadata);
+
+        const downloadURL = await getDownloadURL(snapshot.ref);
+
+        console.log('File successfully uploaded.');
+        return res.send({
+            message: 'file uploaded to firebase storage',
+            name: req.file.originalname,
+            type: req.file.mimetype,
+            downloadURL: downloadURL
+        })
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
+});
+
+const giveCurrentDateTime = () => {
+    const today = new Date();
+    const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    const dateTime = date + ' ' + time;
+    return dateTime;
+}
+
 
 // Delete user
 
