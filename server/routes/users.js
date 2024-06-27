@@ -72,7 +72,7 @@ router.put('/update-username', authenticateUser, async (req, res) => {
 });
 
 // Upload profile picture
-router.post("/upload-profile-picture", upload.single("filename"), async (req, res) => {
+router.post("/upload-profile-picture", upload.single("profilePicture"), async (req, res) => {
     try {
         const dateTime = giveCurrentDateTime();
 
