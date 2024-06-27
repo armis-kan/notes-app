@@ -88,6 +88,7 @@ const ProfileModal = ({ onClose }) => {
                 }
             });
             toast.success('Profile picture updated successfully');
+            console.log('Profile picture updated:', response);
             setProfilePicture(response.data.downloadURL);
         } catch (error) {
             toast.error('An error occurred while updating profile picture');
