@@ -86,6 +86,10 @@ router.post("/upload-profile-picture", upload.single("profilePicture"), async (r
 
         const downloadURL = await getDownloadURL(snapshot.ref);
 
+        console.log(req.user.username, downloadURL);
+
+        const u = await db.updateUserProfilePicture(req.user.username, downloadURL);
+
         console.log('File successfully uploaded.');
         return res.send({
             message: 'file uploaded to firebase storage',
