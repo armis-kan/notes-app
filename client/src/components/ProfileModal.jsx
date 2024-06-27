@@ -23,6 +23,7 @@ const ProfileModal = ({ onClose }) => {
 
             setUsername(response.data.username);
             setBio(response.data.bio);
+            setProfilePicture(response.data.profile_picture);
 
             setLoading(false);
         } catch (error) {
