@@ -23,15 +23,12 @@ const DashboardPage = () => {
   const fetchNotes = async () => {
     try {
       const response = await axios.get('notes/mynotes');
-
       setNotes(response.data);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching notes:', error);
-
       toast.error('You are not authorized to view notes');
       navigate('/auth');
-
       setLoading(false);
     }
   };
@@ -135,7 +132,7 @@ const DashboardPage = () => {
     <div className="flex h-screen">
       <Sidebar onAddNote={handleAddNote} onProfileIconClick={handleProfileIconClick} />
 
-      <div className={`flex-1 bg-white p-4 sm:ml-0 ${columns === 3 ? 'ml-20' : ''}`}> {/* Conditionally apply ml-20 for larger screens */}
+      <div className={`flex-1 bg-white p-4 ${columns === 3 ? 'ml-20' : ''}`}> {/* Conditional apply ml-20 for larger screens */}
         <h1 className='text-3xl bg-gray-100 p-2 rounded-lg w-fit mt-20 ml-10'>My notes</h1>
 
         <div className="flex flex-col items-start sm:flex-row sm:items-center justify-between mt-6 mb-4">

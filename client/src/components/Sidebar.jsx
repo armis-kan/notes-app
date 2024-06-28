@@ -6,7 +6,7 @@ const Sidebar = ({ onAddNote, onProfileIconClick }) => {
 
   const handleLogout = () => {
     removeToken();
-    window.location.reload('/auth');
+    window.location.reload('/auth'); // Reload the page to navigate to the auth route
   };
 
   const toggleSidebar = () => {
