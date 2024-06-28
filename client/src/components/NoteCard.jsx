@@ -111,7 +111,7 @@ const NoteCard = ({ note, onDeleteNote, onUpdateNote }) => {
                     </div>
                     <div>
                         <p className="text-gray-400 text-sm" style={{ color: `${textStyle.color}90` }}>Created on: {createdAt}</p>
-                        <p className="text-gray-400 text-sm" style={{ color: `${textStyle.color}90` }}>Updated on:{updatedAt}</p>
+                        <p className="text-gray-400 text-sm" style={{ color: `${textStyle.color}90` }}>Updated on: {updatedAt}</p>
                     </div>
                 </div>
 
