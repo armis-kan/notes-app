@@ -65,8 +65,8 @@ const DashboardPage = () => {
       setNotes(notes.filter(note => note.id !== noteId));
       toast.success('Note deleted successfully');
     } catch (error) {
-      console.error('Error deleting note:', error);
-      toast.error('An error occurred while deleting note');
+      //console.error('Error deleting note:', error);
+      //toast.error('An error occurred while deleting note');
     } finally {
       fetchNotes();
     }
