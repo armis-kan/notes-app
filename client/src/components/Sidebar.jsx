@@ -6,7 +6,7 @@ const Sidebar = ({ onAddNote, onProfileIconClick }) => {
 
   const handleLogout = () => {
     removeToken();
-    window.location.reload('/auth'); // Reload the page to navigate to the auth route
+    window.location.reload('/auth');
   };
 
   const toggleSidebar = () => {
@@ -24,7 +24,7 @@ const Sidebar = ({ onAddNote, onProfileIconClick }) => {
       </button>
 
       {/* Sidebar */}
-      <div className={`bg-gray-100 fixed inset-y-0 left-0 text-black w-56 flex-shrink-0 rounded-r-full flex flex-col items-center justify-between p-4 transition-transform ease-in-out duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`} style={{ zIndex: 100 }}>
+      <div className={`bg-gray-100 fixed inset-y-0 left-0 text-black w-24 flex-shrink-0 rounded-r-full flex flex-col items-center justify-between p-4 transition-transform ease-in-out duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`} style={{ zIndex: 100 }}>
         <div className="mt-20">
           <button 
             onClick={onAddNote}

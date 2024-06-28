@@ -132,7 +132,7 @@ const DashboardPage = () => {
     <div className="flex h-screen">
       <Sidebar onAddNote={handleAddNote} onProfileIconClick={handleProfileIconClick} />
 
-      <div className={`flex-1 bg-white p-4 ${columns === 3 ? 'ml-20' : ''}`}> {/* Conditional apply ml-20 for larger screens */}
+      <div className={`flex-1 bg-white p-4 sm:ml-0 md:ml-20 lg:ml-20`}>
         <h1 className='text-3xl bg-gray-100 p-2 rounded-lg w-fit mt-20 ml-10'>My notes</h1>
 
         <div className="flex flex-col items-start sm:flex-row sm:items-center justify-between mt-6 mb-4">
