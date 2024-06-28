@@ -1,18 +1,18 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { setToken } from '../services/tokenService';
 
 const LoginForm = ({ toggleForm }) => {
-
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     username: '',
     password: ''
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -26,6 +26,8 @@ const LoginForm = ({ toggleForm }) => {
     e.preventDefault();
     const { username, password } = form;
 
+    setLoading(true);
+
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, { username, password });
 
@@ -35,13 +37,15 @@ const LoginForm = ({ toggleForm }) => {
         const token = response.data.token;
         setToken(token);
 
-        navigate('/dashboard'); 
+        navigate('/dashboard');
       } else {
         toast.error('An error occurred');
       }
     } catch (error) {
       console.error('An unexpected error occurred:', error);
       toast.error('Invalid credentials');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,8 +100,32 @@ const LoginForm = ({ toggleForm }) => {
         <button
           type="submit"
           className="w-full text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 transition-all ease-in-out duration-200"
+          disabled={loading}
         >
-          Log in
+          {loading ? (
+            <svg
+              className="w-5 h-5 mx-auto text-white animate-spin"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          ) : (
+            'Log in'
+          )}
         </button>
       </form>
     </div>
