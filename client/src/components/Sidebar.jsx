@@ -17,14 +17,14 @@ const Sidebar = ({ onAddNote, onProfileIconClick }) => {
     <>
       {/* Sidebar Toggle Button */}
       <button
-        className="fixed top-4 left-4 z-50 p-2 bg-gray-300 rounded-full lg:hidden"
+        className="fixed top-4 left-4 z-30 p-2 bg-gray-300 rounded-full lg:hidden"
         onClick={toggleSidebar}
       >
         <img src="./images/menu.svg" alt="Menu" className="w-6 h-6" />
       </button>
 
       {/* Sidebar */}
-      <div className={`bg-gray-100 fixed inset-y-0 left-0 text-black w-24 flex-shrink-0 rounded-r-full flex flex-col items-center justify-between p-4 transition-transform ease-in-out duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`} style={{ zIndex: 100 }}>
+      <div className={`bg-gray-100 fixed inset-y-0 left-0 text-black w-24 flex-shrink-0 rounded-r-full flex flex-col items-center justify-between p-4 transition-transform ease-in-out duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`} style={{ zIndex: 40 }}>
         <div className="mt-20">
           <button 
             onClick={onAddNote}
