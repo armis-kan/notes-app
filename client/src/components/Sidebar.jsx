@@ -24,7 +24,7 @@ const Sidebar = ({ onAddNote, onProfileIconClick }) => {
       </button>
 
       {/* Sidebar */}
-      <div className={`bg-gray-100 fixed h-screen text-black w-22 flex-shrink-0 rounded-r-full flex flex-col items-center justify-between p-4 transition-transform ease-in-out duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      <div className={`bg-gray-100 fixed inset-y-0 left-0 text-black w-56 flex-shrink-0 rounded-r-full flex flex-col items-center justify-between p-4 transition-transform ease-in-out duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`} style={{ zIndex: 100 }}>
         <div className="mt-20">
           <button 
             onClick={onAddNote}
@@ -58,7 +58,7 @@ const Sidebar = ({ onAddNote, onProfileIconClick }) => {
       {/* Overlay for closing the sidebar */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 z-40 lg:hidden"
+          className="fixed inset-0 z-100 lg:hidden"
           onClick={toggleSidebar}
         ></div>
       )}
