@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const Modal = ({ onClose, onSave, backgroundColor }) => {
+const Modal = ({ onClose, onSave }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [modalBackgroundColor, setModalBackgroundColor] = useState('#FFFFFF');
   const [modalTextColor, setModalTextColor] = useState('#000000');
   const [loading, setLoading] = useState(false);
-
-  console.log(backgroundColor);
 
   const handleSave = async (event) => {
     event.preventDefault();

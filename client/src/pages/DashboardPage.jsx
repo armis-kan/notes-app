@@ -225,8 +225,8 @@ const DashboardPage = () => {
         )}
       </div>
 
-      {isModalOpen && <Modal onCloseModal={handleCloseModal} onSaveNote={handleSaveNote} />}
-      {isProfileModalOpen && <ProfileModal onCloseProfileModal={handleCloseProfileModal} />}
+      {isModalOpen && <Modal onClose={handleCloseModal} onSave={handleSaveNote} />}
+      {isProfileModalOpen && <ProfileModal onClose={handleCloseProfileModal} />}
     </div>
   );
 };
