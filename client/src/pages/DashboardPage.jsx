@@ -194,7 +194,7 @@ const DashboardPage = () => {
 
         {/* Conditional rendering based on loading state or empty notes */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 max-w-6xl w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 ml-5 max-w-6xl w-full">
             {[...Array(6)].map((_, index) => (
               <div key={index} className="p-4 bg-white border border-gray-200 rounded-lg shadow animate-pulse">
                 <div className="h-4 bg-gray-200 rounded mb-2"></div>

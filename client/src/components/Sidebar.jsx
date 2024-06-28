@@ -58,7 +58,7 @@ const Sidebar = ({ onAddNote, onProfileIconClick }) => {
       {/* Overlay for closing the sidebar */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 z-100 lg:hidden"
+          className="fixed inset-0 z-50 lg:hidden"
           onClick={toggleSidebar}
         ></div>
       )}
