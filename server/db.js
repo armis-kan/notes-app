@@ -8,9 +8,9 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-    ssl: {
-        rejectUnauthorized: true,
-    }
+    // ssl: {
+    //     rejectUnauthorized: true,
+    // }
 });
 
 pool.connect((err) => {
@@ -31,6 +31,11 @@ const createUser = async (username, password) => {
 
 const getUserByUsername = async (username) => {
     const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    return result.rows[0];
+};
+
+const getUserById = async (id) => {
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
     return result.rows[0];
 };
 
@@ -81,6 +86,7 @@ const deleteNote = async (id) => {
 module.exports = {
     createUser,
     getUserByUsername,
+    getUserById,
     updateUserBio,
     updateUserUsername,
     updateUserProfilePicture,

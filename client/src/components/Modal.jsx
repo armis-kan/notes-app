@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import { getToken } from '../services/tokenService';
 
 const Modal = ({ onClose, onSave }) => {
   const [title, setTitle] = useState('');
@@ -7,12 +9,14 @@ const Modal = ({ onClose, onSave }) => {
   const [modalBackgroundColor, setModalBackgroundColor] = useState('#FFFFFF');
   const [modalTextColor, setModalTextColor] = useState('#000000');
   const [loading, setLoading] = useState(false);
+  const [AIWindowVisible, setAIWindowVisible] = useState(false);
+  const [aiQuestion, setAiQuestion] = useState('');
+  const [aiLoading, setAILoading] = useState(false);
 
   const handleSave = async (event) => {
     event.preventDefault();
     setLoading(true);
     try {
-      console.table({ title, content, background_color: modalBackgroundColor, text_color: modalTextColor });
       await onSave({ title, content, background_color: modalBackgroundColor, text_color: modalTextColor });
       setTitle('');
       setContent('');
@@ -20,6 +24,24 @@ const Modal = ({ onClose, onSave }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAIQuestionSubmit = async (event) => {
+    event.preventDefault();
+    setAILoading(true);
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/ai/generate-text`,
+      { prompt: aiQuestion },
+      {
+        headers: {
+          'Authorization': `Bearer ${getToken()}`,
+        },
+      }
+    );
+    setAILoading(false);
+    setContent(content + response.data.generatedText.choices[0].message.content);
+
+    setAiQuestion('');
+    setAIWindowVisible(false);
   };
 
   return (
@@ -64,7 +86,16 @@ const Modal = ({ onClose, onSave }) => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="content" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Content</label>
+                  <div className='flex flex-row gap-2 items-center mb-2'>
+                    <label htmlFor="content" className="block text-sm font-medium text-gray-900 dark:text-white">Content</label>
+                    <button
+                      className='w-6 h-6 rounded-full'
+                      title='Ask AI to generate text'
+                      onClick={(e) => { e.preventDefault(); setAIWindowVisible(!AIWindowVisible); }}
+                    >
+                      <img src='../images/ai.svg' className='w-6 h-6' alt='AI' />
+                    </button>
+                  </div>
                   <textarea
                     id="content"
                     rows="4"
@@ -110,25 +141,25 @@ const Modal = ({ onClose, onSave }) => {
                 <button type="submit" className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" disabled={loading}>
                   {loading ? (
                     <svg
-                    className="w-5 h-5 mx-auto text-white animate-spin"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
+                      className="w-5 h-5 mx-auto text-white animate-spin"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
                   ) : (
                     <>
                       <svg className="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -143,6 +174,72 @@ const Modal = ({ onClose, onSave }) => {
           </div>
         </div>
       </div>
+
+      {/* AI Input Window */}
+      {AIWindowVisible && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        >
+          <div className="bg-white rounded-lg md:p-5 w-[400px]">
+            <h3 className="text-lg font-semibold text-gray-900">Ask AI to write content</h3>
+            <form className="mt-3" onSubmit={handleAIQuestionSubmit}>
+              <textarea
+                rows="4"
+                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Example: Write a short story about a robot and a human"
+                value={aiQuestion}
+                onChange={(e) => setAiQuestion(e.target.value)}
+                required
+              ></textarea>
+              <div className="flex justify-center items-center mt-3 gap-6">
+                <button
+                  type="button"
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  onClick={() => setAIWindowVisible(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="ml-2 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 rounded-lg dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 transition-all ease-in-out"
+                >
+                  {aiLoading ? (
+                    <svg
+                      className="w-5 h-5 ms-1 text-white animate-spin"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    <>
+                      Ask AI <img src="../images/ai.svg" className="w-5 h-5 ms-1" alt="AI" />
+                    </>
+                  )}
+
+                </button>
+              </div>
+            </form>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
