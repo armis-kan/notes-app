@@ -47,6 +47,7 @@ const DashboardPage = () => {
 
   const handleSaveNote = async (note) => {
     try {
+      console.table(note);
       const response = await axios.post('notes/create', note);
       setNotes([...notes, response.data]);
       setIsModalOpen(false);

@@ -34,6 +34,7 @@ router.get('/mynotes', async (req, res) => {
 router.post('/create', async (req, res) => {
     const { title, content, background_color, text_color } = req.body;
     const userId = req.user.id;
+    console.log('id: ' + userId);
     try {
 
         if (userId !== req.user.id) {
