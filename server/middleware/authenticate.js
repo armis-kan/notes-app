@@ -4,8 +4,6 @@ const { getUserByUsername } = require('../db');
 const authenticateUser = async (req, res, next) => {
   // Check for token in headers
   const token = req.header('Authorization')?.replace('Bearer ', '');
-  console.log(req.header('Authorization'));
-  console.log('token: ' + token);
   if (!token) {
     return res.status(401).json({ error: 'Authorization token not found' });
   }

@@ -36,7 +36,7 @@ router.post('/create', async (req, res) => {
     const userId = req.user.user_id;
     try {
 
-        if (userId !== req.user.id) {
+        if (userId !== req.user.user_id) {
             return res.status(403).json({ error: 'Unauthorized' });
         }
         
