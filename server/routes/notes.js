@@ -35,6 +35,7 @@ router.post('/create', async (req, res) => {
     const { title, content, background_color, text_color } = req.body;
     const userId = req.user.id;
     console.log('id: ' + userId);
+    console.log(req.user);
     try {
 
         if (userId !== req.user.id) {
