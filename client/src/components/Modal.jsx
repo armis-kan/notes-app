@@ -191,7 +191,7 @@ const Modal = ({ onClose, onSave }) => {
           transition={{ duration: 0.2 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
         >
-          <div className="bg-white rounded-lg md:p-5 w-[400px]">
+          <div className="bg-white rounded-lg p-4 md:p-5 w-[400px]">
             <h3 className="text-lg font-semibold text-gray-900">Ask AI to write content</h3>
             <form className="mt-3" onSubmit={handleAIQuestionSubmit}>
               <textarea

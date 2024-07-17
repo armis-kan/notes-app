@@ -20,6 +20,7 @@ const HomePage = () => {
             <p className="mt-4 text-lg text-gray-700 text-center md:text-left">
               Manage your notes with ease and never lose track of your ideas again.
             </p>
+            <p>Now insipred by <b>AI.</b></p>
           </div>
         </div>
 
