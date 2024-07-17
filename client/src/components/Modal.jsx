@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { getToken } from '../services/tokenService';
+import { toast } from 'react-hot-toast';
 
 const Modal = ({ onClose, onSave }) => {
   const [title, setTitle] = useState('');
@@ -29,19 +30,25 @@ const Modal = ({ onClose, onSave }) => {
   const handleAIQuestionSubmit = async (event) => {
     event.preventDefault();
     setAILoading(true);
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}/ai/generate-text`,
-      { prompt: aiQuestion },
-      {
-        headers: {
-          'Authorization': `Bearer ${getToken()}`,
-        },
-      }
-    );
-    setAILoading(false);
-    setContent(content + response.data.generatedText.choices[0].message.content);
 
-    setAiQuestion('');
-    setAIWindowVisible(false);
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/ai/generate-text`,
+        { prompt: aiQuestion },
+        {
+          headers: {
+            'Authorization': `Bearer ${getToken()}`,
+          },
+        }
+      );
+      setAILoading(false);
+      setContent(content + response.data.generatedText.choices[0].message.content);
+
+      setAiQuestion('');
+      setAIWindowVisible(false);
+    } catch (error) {
+      toast.error('Something went wrong ' + error);
+      setAILoading(false);
+    }
   };
 
   return (
