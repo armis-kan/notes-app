@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(authenticateUser);
 
 router.get('/mynotes', async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user.user_id;
     try {
         const notes = await db.getNotesByUserId(userId);
         res.status(200).json(notes);
@@ -33,9 +33,7 @@ router.get('/mynotes', async (req, res) => {
 // Create a new note
 router.post('/create', async (req, res) => {
     const { title, content, background_color, text_color } = req.body;
-    const userId = req.user.id;
-    console.log('id: ' + userId);
-    console.log(req.user);
+    const userId = req.user.user_id;
     try {
 
         if (userId !== req.user.id) {
