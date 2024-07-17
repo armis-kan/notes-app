@@ -57,7 +57,7 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({ error: 'Note not found' });
         }
 
-        if (note.user_id !== req.user.id) {
+        if (note.user_id !== req.user.user_id) {
             return res.status(403).json({ error: 'Unauthorized' });
         }
 
@@ -78,7 +78,7 @@ router.delete('/:id', async (req, res) => {
             return res.status(404).json({ error: 'Note not found' });
         }
 
-        if (note.user_id !== req.user.id) {
+        if (note.user_id !== req.user.user_id) {
             return res.status(403).json({ error: 'Unauthorized' });
         }
 
