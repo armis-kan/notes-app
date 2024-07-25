@@ -2,28 +2,16 @@ const express = require('express');
 const db = require('../db');
 const { OpenAI } = require('openai');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const FormData = require('form-data');
+const fetch = require('node-fetch');
+const { Readable } = require('stream');
 const authenticateUser = require('../middleware/authenticate');
 
 const router = express.Router();
 
 router.use(authenticateUser);
 
-const tmpDir = path.join(__dirname, '../tmp');
-if (!fs.existsSync(tmpDir)) {
-    fs.mkdirSync(tmpDir);
-}
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, tmpDir);
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -69,23 +57,31 @@ router.post('/speech-to-text', upload.single('audio'), async (req, res) => {
         return res.status(403).json({ error: 'Unauthorized' });
     }
 
-    const audioFilePath = req.file.path;
+    const audioBuffer = req.file.buffer;
 
     try {
-        const response = await openai.audio.transcriptions.create({
-            file: fs.createReadStream(audioFilePath),
-            model: 'whisper-1',
+        const form = new FormData();
+        form.append('file', Readable.from(audioBuffer), { filename: 'audio.mp3' });
+        form.append('model', 'whisper-1');
+
+        const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+            method: 'POST',
+            body: form,
+            headers: {
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                ...form.getHeaders()
+            }
         });
 
-        fs.unlinkSync(audioFilePath);
-        res.json({ transcript: response.text });
+        if (!response.ok) {
+            throw new Error('Error with OpenAI API');
+        }
+
+        const result = await response.json();
+        res.json({ transcript: result.text });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error processing audio');
-
-        if (fs.existsSync(audioFilePath)) {
-            fs.unlinkSync(audioFilePath);
-        }
     }
 });
 
