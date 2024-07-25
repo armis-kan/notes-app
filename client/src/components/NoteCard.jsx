@@ -109,9 +109,25 @@ const NoteCard = ({ note, onDeleteNote, onUpdateNote }) => {
                             <img src="./images/delete.svg" alt="Delete note" className="w-6 h-6" />
                         </button>
                     </div>
-                    <div>
-                        <p className="text-gray-400 text-xs" style={{ color: `${textStyle.color}90` }}>Created on: {createdAt}</p>
-                        <p className="text-gray-400 text-xs" style={{ color: `${textStyle.color}90` }}>Updated on: {updatedAt}</p>
+                    <div className="p-4">
+                        <div className="relative">
+                            {/* Tooltip for createdAt */}
+                            <p className="text-gray-400 text-xs relative group">
+                                {createdAt}
+                                <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 text-xs bg-gray-700 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Creation Date
+                                </span>
+                            </p>
+                        </div>
+                        <div className="relative mt-1">
+                            {/* Tooltip for updatedAt */}
+                            <p className="text-gray-400 text-xs relative group">
+                                {updatedAt}
+                                <span className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 text-xs bg-gray-700 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Last Updated Date
+                                </span>
+                            </p>
+                        </div>
                     </div>
                 </div>
 
