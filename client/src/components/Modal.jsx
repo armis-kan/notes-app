@@ -14,6 +14,9 @@ const Modal = ({ onClose, onSave }) => {
   const [aiQuestion, setAiQuestion] = useState('');
   const [aiLoading, setAILoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [, setRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [transcribing, setTranscribing] = useState(false);
 
   const handleSave = async (event) => {
     event.preventDefault();
@@ -51,35 +54,51 @@ const Modal = ({ onClose, onSave }) => {
     }
   };
 
-  const startSpeechRecognition = () => {
-    // Check if SpeechRecognition or webkitSpeechRecognition is available
-    if (!('SpeechRecognition' in window) && !('webkitSpeechRecognition' in window)) {
-      toast.error('Speech recognition is not supported in this browser.');
-      return;
+  const startRecording = () => {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      toast.success('Recording started');
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        const recorder = new MediaRecorder(stream);
+        recorder.ondataavailable = async (event) => {
+          if (event.data.size > 0) {
+            const formData = new FormData();
+            formData.append('audio', event.data, 'audio.webm');
+            setTranscribing(true);
+            try {
+              const response = await axios.post(`${process.env.REACT_APP_API_URL}/ai/speech-to-text`, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'Authorization': `Bearer ${getToken()}`,
+                },
+              });
+              setContent(content + ' ' + response.data.transcript);
+              setIsSpeaking(false);
+              setRecording(false);
+            } catch (error) {
+              toast.error('Error processing audio');
+            } finally {
+              setTranscribing(false);
+              setIsSpeaking(false);
+              setRecording(false);
+            }
+          }
+        };
+        recorder.start();
+        setMediaRecorder(recorder);
+        setRecording(true);
+        setIsSpeaking(true);
+      }).catch(error => {
+        toast.error('Error accessing microphone');
+      });
     }
+  };
 
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
 
-    recognition.onstart = () => setIsSpeaking(true);
-    recognition.onend = () => setIsSpeaking(false);
-    recognition.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
-      toast.error(`Speech recognition error: ${event.error}`);
-      setIsSpeaking(false);
-    };
-
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      setContent(content + transcript + ' ');
-    };
-
-    try {
-      recognition.start();
-    } catch (error) {
-      console.error('Failed to start speech recognition:', error);
-      toast.error('Failed to start speech recognition. Please try again.');
+  const stopRecording = () => {
+    if (mediaRecorder) {
+      toast.success('Recording stopped');
+      mediaRecorder.stop();
+      setMediaRecorder(null);
     }
   };
 
@@ -135,12 +154,13 @@ const Modal = ({ onClose, onSave }) => {
                       <img src='../images/ai.svg' className='w-6 h-6' alt='AI' />
                     </button>
                     <button
-                      className={`flex justify-center items-center w-6 h-6 rounded-full border-2 ${isSpeaking ? 'border-red-500 animate-pulse' : 'border-gray-300'}`}
+                      className={`flex justify-center items-center gap-3 w-6 h-6 rounded-full border-2 ${isSpeaking ? 'border-red-500 animate-pulse' : 'border-gray-300'}`}
                       title='Use Speech Input'
-                      onClick={(e) => { e.preventDefault(); startSpeechRecognition(); }}
+                      onClick={(e) => { e.preventDefault(); isSpeaking ? stopRecording() : startRecording(); }}
                     >
                       <img src='../images/voice.svg' className='w-4 h-4' alt='Speech' />
                     </button>
+                    {transcribing && <div className='text-xs p-1 bg-red-600 rounded-lg text-white animate-pulse'>Generating...</div>}
                   </div>
                   <textarea
                     id="content"
