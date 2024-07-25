@@ -52,20 +52,35 @@ const Modal = ({ onClose, onSave }) => {
   };
 
   const startSpeechRecognition = () => {
+    // Check if SpeechRecognition or webkitSpeechRecognition is available
+    if (!('SpeechRecognition' in window) && !('webkitSpeechRecognition' in window)) {
+      toast.error('Speech recognition is not supported in this browser.');
+      return;
+    }
+
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'en-US';
     recognition.interimResults = false;
 
     recognition.onstart = () => setIsSpeaking(true);
     recognition.onend = () => setIsSpeaking(false);
-    recognition.onerror = () => setIsSpeaking(false);
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      toast.error(`Speech recognition error: ${event.error}`);
+      setIsSpeaking(false);
+    };
 
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setContent(content + transcript + ' ');
     };
 
-    recognition.start();
+    try {
+      recognition.start();
+    } catch (error) {
+      console.error('Failed to start speech recognition:', error);
+      toast.error('Failed to start speech recognition. Please try again.');
+    }
   };
 
   return (
