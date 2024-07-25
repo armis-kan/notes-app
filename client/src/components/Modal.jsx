@@ -13,6 +13,7 @@ const Modal = ({ onClose, onSave }) => {
   const [AIWindowVisible, setAIWindowVisible] = useState(false);
   const [aiQuestion, setAiQuestion] = useState('');
   const [aiLoading, setAILoading] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const handleSave = async (event) => {
     event.preventDefault();
@@ -42,13 +43,29 @@ const Modal = ({ onClose, onSave }) => {
       );
       setAILoading(false);
       setContent(content + response.data.generatedText.choices[0].message.content);
-
       setAiQuestion('');
       setAIWindowVisible(false);
     } catch (error) {
       toast.error('Something went wrong ' + error);
       setAILoading(false);
     }
+  };
+
+  const startSpeechRecognition = () => {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+
+    recognition.onstart = () => setIsSpeaking(true);
+    recognition.onend = () => setIsSpeaking(false);
+    recognition.onerror = () => setIsSpeaking(false);
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setContent(content + transcript + ' ');
+    };
+
+    recognition.start();
   };
 
   return (
@@ -101,6 +118,13 @@ const Modal = ({ onClose, onSave }) => {
                       onClick={(e) => { e.preventDefault(); setAIWindowVisible(!AIWindowVisible); }}
                     >
                       <img src='../images/ai.svg' className='w-6 h-6' alt='AI' />
+                    </button>
+                    <button
+                      className={`flex justify-center items-center w-6 h-6 rounded-full border-2 ${isSpeaking ? 'border-red-500 animate-pulse' : 'border-gray-300'}`}
+                      title='Use Speech Input'
+                      onClick={(e) => { e.preventDefault(); startSpeechRecognition(); }}
+                    >
+                      <img src='../images/voice.svg' className='w-4 h-4' alt='Speech' />
                     </button>
                   </div>
                   <textarea
